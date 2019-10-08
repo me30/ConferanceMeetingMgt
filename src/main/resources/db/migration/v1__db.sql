@@ -1,0 +1,18 @@
+DROP TABLE `conferancedb`.`meeting_room_details`;
+CREATE TABLE `conferancedb`.`meeting_room_details` (`id` int NOT NULL AUTO_INCREMENT, `capacity` int, `floor` int, `location` varchar(255), `name` varchar(255), PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+DROP TABLE `conferancedb`.`scheduler`;
+CREATE TABLE `conferancedb`.`scheduler` (`id` int NOT NULL AUTO_INCREMENT, `end_time` datetime, `event_name` varchar(255), `owner` int, `start_time` datetime, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `conferancedb`.`scheduler` (`id`, `end_time`, `event_name`, `owner`, `start_time`) VALUES (1, '2019-10-20 10:10:00', 'Event A', 1, '2019-10-20 09:10:00');
+INSERT INTO `conferancedb`.`scheduler` (`id`, `end_time`, `event_name`, `owner`, `start_time`) VALUES (2, '2019-10-21 10:10:00', 'Event B', 1, '2019-10-20 09:10:00');
+INSERT INTO `conferancedb`.`scheduler` (`id`, `end_time`, `event_name`, `owner`, `start_time`) VALUES (3, '2019-10-22 10:10:00', 'Event C', 1, '2019-10-20 09:10:00');
+DROP TABLE `conferancedb`.`schedules_user`;
+CREATE TABLE `conferancedb`.`schedules_user` (`schedules_id` int NOT NULL, `user_id` bigint NOT NULL, PRIMARY KEY (`schedules_id`, `user_id`), INDEX `FKnokmjoqthg2usxg5vw5x8yq6s` (`user_id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `conferancedb`.`schedules_user` (`schedules_id`, `user_id`) VALUES (1, 1);
+INSERT INTO `conferancedb`.`schedules_user` (`schedules_id`, `user_id`) VALUES (2, 1);
+DROP TABLE `conferancedb`.`user`;
+CREATE TABLE `conferancedb`.`user` (`id` bigint NOT NULL AUTO_INCREMENT, `email` varchar(200) NOT NULL, `user_password` varchar(255), PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `conferancedb`.`user` (`id`, `email`, `user_password`) VALUES (1, 'admin@gmail.com', 'admin');
+INSERT INTO `conferancedb`.`meeting_room_details` (`id`, `capacity`, `floor`, `location`, `name`) VALUES (1, 10, 1, 'Pune', 'Room 1');
+INSERT INTO `conferancedb`.`meeting_room_details` (`id`, `capacity`, `floor`, `location`, `name`) VALUES (2, 5, 2, 'Pune', 'Room 2');
+ALTER TABLE `conferancedb`.`schedules_user` ADD CONSTRAINT `FKjkpiofgq6sq0dhfo1v6qgga75` FOREIGN KEY (`schedules_id`) REFERENCES `conferancedb`.`scheduler` (`id`) ;
+ALTER TABLE `conferancedb`.`schedules_user` ADD CONSTRAINT `FKnokmjoqthg2usxg5vw5x8yq6s` FOREIGN KEY (`user_id`) REFERENCES `conferancedb`.`user` (`id`);

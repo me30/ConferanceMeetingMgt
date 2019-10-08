@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8" />
@@ -52,7 +52,7 @@
    	        "serverMethod": "POST",
    	        "destroy":true,
    	        "columns": [
-   	         	{ "data": "id" },
+   	         	{ "data": "id" , "visible": false},
    	            { "data": "eventName" },
    	            { "data": "startTime" },
    	            { "data": "endTime" },
