@@ -2,15 +2,20 @@ package com.commons.controller;
 
 import java.util.Date;
 
+import javax.print.attribute.standard.SheetCollate;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.commons.entity.Scheduler;
+import com.commons.entity.User;
 import com.commons.model.DataTableJsonObject;
 import com.commons.service.ConferanceService;
 import com.google.gson.Gson;
@@ -66,5 +71,12 @@ public class ConferanceController {
 			e.printStackTrace();
 		}
 		return json;
+	}
+	
+	
+	@RequestMapping(value = { "/book" }, method = RequestMethod.POST)
+	public @ResponseBody Scheduler booking(@RequestParam(value = "meetingid") String meetingid, @RequestParam(value = "durationid") String durationid,
+			@RequestParam(value = "eventname") String eventname, @RequestParam(value = "scheduleDate") String scheduleDate) throws Exception {
+		return conferanceService.bookedSchedule(meetingid, durationid, eventname, scheduleDate, new User(1l));
 	}
 }

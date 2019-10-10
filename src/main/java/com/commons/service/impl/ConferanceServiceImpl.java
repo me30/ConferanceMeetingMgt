@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.commons.entity.Duration;
 import com.commons.entity.MeetingRoomDetails;
 import com.commons.entity.Scheduler;
+import com.commons.entity.User;
 import com.commons.model.DataTableJsonObject;
 import com.commons.repository.DurationRepository;
 import com.commons.repository.MeetingRoomDetailsRepository;
@@ -82,6 +83,18 @@ public class ConferanceServiceImpl implements ConferanceService{
 	@Override
 	public List<Duration> fetchAllDuration() {
 		return durationRepository.findAll();
+	}
+
+
+	@Override
+	public Scheduler bookedSchedule(String meetingid, String durationid, String eventname, String scheduleDate, User user) {
+		Scheduler s = new Scheduler();
+		s.setMeetingRoomDetails(new MeetingRoomDetails(Long.parseLong(meetingid)));
+		s.setDuration(new Duration(Long.parseLong(durationid)));
+		s.setEventName(eventname);
+		s.setScheduleDate(new Date(scheduleDate));
+		s.setOwner(user);
+		return schedulerRepository.save(s);
 	}
 
 

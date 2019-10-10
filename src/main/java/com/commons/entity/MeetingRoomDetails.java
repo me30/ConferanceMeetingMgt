@@ -68,6 +68,14 @@ public class MeetingRoomDetails {
 		this.location = location;
 	}
 
+	
+	public MeetingRoomDetails() {
+	}
+	
+	public MeetingRoomDetails(Long id) {
+		this.id = id;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

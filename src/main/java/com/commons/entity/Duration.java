@@ -75,5 +75,13 @@ public class Duration {
 			return false;
 		return true;
 	}
+
+	public Duration(Long id) {
+		super();
+		this.id = id;
+	}
+	
+	public Duration() {
+	}
 	
 }

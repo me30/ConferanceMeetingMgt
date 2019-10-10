@@ -64,4 +64,12 @@ public class User {
     public String toString() {
         return "UserEntity [id=" + id + ", password=" + password + ", email=" + email   + "]";
     }
+
+	public User(Long id) {
+		super();
+		this.id = id;
+	}
+	public User() {
+	}
+	
 }

@@ -98,6 +98,14 @@
     		};
     	};
 
+    	function bookBtn(obj){
+    		debugger;
+    		$("#book .devbooksavebtn").attr("meetingid",$(obj).attr('meetingid')); 
+    		$("#book .devbooksavebtn").attr("durationid",$(obj).attr('durationid')); 
+    		$("#book .devbooksavebtn").attr("scheduleDate",$(obj).attr('scheduleDate')); 
+    		
+    	}
+    	
     	$(document).ready(function () {
     		$('.datetimepicker3').datepicker({
     			autoclose: true
@@ -140,7 +148,7 @@
     				{
     					"data": "owner.firstName",
     					"render": function(data, type, full) { 
-    							return (data != null) ? data : '<button type="button" class="btn btn-primary devbook form-control">Book</button>'
+    							return (data != null) ? data : '<button type="button" scheduleDate = "'+full.scheduleDate+'" durationid= '+full.duration.id+' meetingid= '+full.meetingRoomDetails.id+' onclick="bookBtn(this);" class="btn btn-primary devbook form-control" data-toggle="modal" data-target="#book">Book</button>'
     					}
     				}
     			]
@@ -151,9 +159,47 @@
     		$('.devsearch').on("click", function () {
     			search = true;
     			table.draw();
+    			
+    			
+    		});
+    		
+    		$('.devbooksavebtn').on("click", function () {
+    			$.ajax({
+    				  type: "POST",
+    				  url: "${pageContext.request.contextPath}/book",
+    				  data: {
+    					  meetingid : $(this).attr('meetingid'),
+    					  durationid: $(this).attr('durationid'),
+    					  eventname: $("#eventname").val(),
+    					  scheduleDate: $(this).attr('scheduleDate')
+    				  },
+    				  cache: false,
+    				  success: function(data){
+    					  $('#book').modal('toggle');
+    				  }
+    				});
+    			
     		});
     	});
       </script>
        </div>
+       
+       
+       <!-- Modal -->
+<div class="modal fade" id="book" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        Event Name:<input type="text" id="eventname"/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary devbooksavebtn" durationid="" meetingid="" >Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
    </body>
 </html>
