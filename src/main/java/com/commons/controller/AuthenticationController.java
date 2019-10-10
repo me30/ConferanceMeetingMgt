@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.commons.model.Authentication;
+import com.commons.service.ConferanceService;
 import com.commons.service.UserService;
 
 @Controller
@@ -19,6 +20,9 @@ public class AuthenticationController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	ConferanceService conferanceService;
+	
 	@GetMapping(value = "/")
 	public ModelAndView loginView() {
 		return new ModelAndView("login", "authentication", new Authentication());
@@ -26,13 +30,14 @@ public class AuthenticationController {
 
 	@PostMapping(value = "/auth")
 	public ModelAndView authentication(@ModelAttribute("authentication") Authentication auth) {
-		ModelAndView mav ;
+		ModelAndView mv ;
 		if(userService.isAuthenticate(auth)) {
-			mav = new ModelAndView("dashboard");
+			mv = new ModelAndView("dashboard");
+			mv.addObject("duration", conferanceService.fetchAllDuration());
 		}else {
-			mav = new ModelAndView("login");
+			mv = new ModelAndView("login");
 		}
-		return mav;
+		return mv;
 	}
 	
 	@PostMapping(value = "/logout")

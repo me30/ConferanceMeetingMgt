@@ -2,6 +2,7 @@ package com.commons.entity;
 
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,14 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.JoinColumn;
 
 @Entity
 @Table(name = "scheduler")
@@ -26,14 +24,6 @@ public class Scheduler {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column
 	private Integer id;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "start_time")
-	private Date startTime;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "end_time")
-	private Date endTime;
 	
 	@ManyToOne
 	@JoinColumn(name = "owner")
@@ -51,6 +41,13 @@ public class Scheduler {
 	@ManyToOne
 	@JoinColumn(name = "meeting_room_details_id")
 	private MeetingRoomDetails meetingRoomDetails;
+	
+	@ManyToOne
+	@JoinColumn(name = "duration_id")
+	private Duration duration;
+	
+	@Column(name = "schedule_date")
+	private Date scheduleDate;
 
 	public Integer getId() {
 		return id;
@@ -58,22 +55,6 @@ public class Scheduler {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
 	}
 
 	public User getOwner() {
@@ -107,7 +88,14 @@ public class Scheduler {
 	public void setMeetingRoomDetails(MeetingRoomDetails meetingRoomDetails) {
 		this.meetingRoomDetails = meetingRoomDetails;
 	}
-	
+
+	public Duration getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
 	
 	
 }

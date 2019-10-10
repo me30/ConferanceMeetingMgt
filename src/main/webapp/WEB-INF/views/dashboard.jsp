@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
    <head>
@@ -31,7 +32,7 @@
                <div class="panel-body">
                   <div class="form-group col-sm-3">
                      <label class="filter-col"  for="pref-orderby">Location:</label>
-                     <select id="pref-orderby" class="form-control">
+                     <select id="pref-orderby" class="form-control devlocation">
                         <option>Bexhill</option>
                         <option>Norfolk</option>
                         <option>Derbyshire</option>
@@ -39,19 +40,19 @@
                   </div>
                   
                  <div class="form-group col-sm-3">
-                      <label class="filter-col"  for="pref-orderby">Start Time:</label>
-                     <div class="input-group date" data-provide="datepicker">
-                        <input type="text" class="form-control">
-                        <div class="input-group-addon">
-                           <span class="glyphicon glyphicon-th"></span>
-                        </div>
-                     </div>
+                      <label class="filter-col"  for="pref-orderby">Timing:</label>
+                       <select class="form-control devTiming">
+					         <c:forEach items="${duration}"  var="duration">
+					         	<option value="${duration.getId()}">${duration.getStartTime()}  To  ${duration.getEndTime()} 
+					         </option>
+					         </c:forEach>
+					 </select>
                   </div>
                   
                   <div class="form-group col-sm-3">
-                     <label class="filter-col"  for="pref-orderby">End Time:</label>
+                     <label class="filter-col"  for="pref-orderby">Date:</label>
                      <div class="input-group date" data-provide="datepicker">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control devdate">
                         <div class="input-group-addon">
                            <span class="glyphicon glyphicon-th"></span>
                         </div>
@@ -60,7 +61,7 @@
                   
                   <div class="form-group col-sm-3">
                      <label class="filter-col"  for="pref-orderby"></label>
-                  	<button type="button" class="btn btn-primary form-control">Search</button>
+                  	<button type="button" class="btn btn-primary devsearch form-control">Search</button>
                   </div>
             </div>
          </div>
@@ -83,42 +84,76 @@
          </table>
       </div>
       <script type="text/javascript">
-         jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
-         {
-         return {
-         "iStart":         oSettings._iDisplayStart,
-         "iEnd":           oSettings.fnDisplayEnd(),
-         "iLength":        oSettings._iDisplayLength,
-         "iTotal":         oSettings.fnRecordsTotal(),
-         "iFilteredTotal": oSettings.fnRecordsDisplay(),
-         "iPage":          oSettings._iDisplayLength === -1 ?
-         0 : Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
-         "iTotalPages":    oSettings._iDisplayLength === -1 ?
-         0 : Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
-         };
-         };
-         
-         $(document).ready( function () {
-          var table = $('#meetingtbl').DataTable({
-        	     "bFilter": false,
-                 "processing": true,
-                 "serverSide": true,
-                 "ajaxSource": "${pageContext.request.contextPath}/fetchAll",
-                 "serverMethod": "POST",
-                 "destroy":true,
-                 "columns": [
-                  	{ "data": "id" , "visible": false},
-                  	{ "data": "meetingRoomDetails.name" },
-                    { "data": "eventName" },
-                    { "data": "meetingRoomDetails.location" },
-                    { "data": "startTime" },
-                    { "data": "endTime" },
-                    { "data": "owner.firstName" }
-                 ]
-             });
-         });
-         
-         $('.datetimepicker3').datetimepicker();
+      jQuery.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
+    		return {
+    			"iStart": oSettings._iDisplayStart,
+    			"iEnd": oSettings.fnDisplayEnd(),
+    			"iLength": oSettings._iDisplayLength,
+    			"iTotal": oSettings.fnRecordsTotal(),
+    			"iFilteredTotal": oSettings.fnRecordsDisplay(),
+    			"iPage": oSettings._iDisplayLength === -1 ?
+    				0 : Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+    			"iTotalPages": oSettings._iDisplayLength === -1 ?
+    				0 : Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+    		};
+    	};
+
+    	$(document).ready(function () {
+    		$('.datetimepicker3').datepicker({
+    			autoclose: true
+    		});
+    		
+    		var search = false;
+    		var table = $('#meetingtbl').DataTable({
+    			"bFilter": false,
+    			"processing": true,
+    			"serverSide": true,
+    			"ajaxSource": '${pageContext.request.contextPath}/fetchAll',
+    			"serverMethod": "POST",
+    			"fnServerParams": function (aoData) {
+                    //var includeUsuallyIgnored = $("#include-checkbox").is(":checked");
+                    aoData.push({name: "location", value: $('.devlocation').val().trim()});
+                    aoData.push({name: "durationid", value: $('.devTiming').val().trim()});
+                    aoData.push({name: "time", value: $('.devTiming option:selected').text().trim()});
+                    aoData.push({name: "date", value: $('.devdate').val().trim()});
+                    aoData.push({name: "issearch", value: search});
+                },
+    			"destroy": true,
+    			"columns": [{
+    					"data": "id",
+    					"visible": false
+    				},
+    				{
+    					"data": "meetingRoomDetails.name"
+    				},
+    				{
+    					"data": "eventName"
+    				},
+    				{
+    					"data": "meetingRoomDetails.location"
+    				},
+    				{
+    					"data": "duration.startTime"
+    				},
+    				{
+    					"data": "duration.endTime"
+    				},
+    				{
+    					"data": "owner.firstName",
+    					"render": function(data, type, full) { 
+    							return (data != null) ? data : '<button type="button" class="btn btn-primary devbook form-control">Book</button>'
+    					}
+    				}
+    			]
+    		});
+    		$('.datetimepicker3').datepicker({
+    			autoclose: true
+    		});
+    		$('.devsearch').on("click", function () {
+    			search = true;
+    			table.draw();
+    		});
+    	});
       </script>
        </div>
    </body>
