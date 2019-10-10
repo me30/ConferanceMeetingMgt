@@ -3,14 +3,14 @@ package com.commons.controller;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.commons.model.DataTableJsonObject;
 import com.commons.service.ConferanceService;
 import com.google.gson.Gson;
@@ -58,14 +58,7 @@ public class ConferanceController {
 			String date = httpServletRequest.getParameter("date");
 			boolean issearch = Boolean.parseBoolean(httpServletRequest.getParameter("issearch"));
 
-			DataTableJsonObject jsonobj ;
-			if(!issearch) {
-				jsonobj = conferanceService.featchAll(cols[sCol], orderDirection,
-						searchParameter, startRec, pageDisplayLength, pageNumber);
-			}else {
-				jsonobj = conferanceService.search(cols[sCol], orderDirection,
-						searchParameter, startRec, pageDisplayLength, pageNumber,location, 1, time , new Date());
-			}
+			DataTableJsonObject jsonobj  = conferanceService.featchAll(cols[sCol], orderDirection, 	searchParameter, startRec, pageDisplayLength, pageNumber,location, durationid, time , new Date(), issearch);
 
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			json = gson.toJson(jsonobj);

@@ -72,12 +72,12 @@
             <!-- Header Table -->
             <thead>
                <tr>
-                  <th style="display: none;">Id</th>
                   <th>Room Name</th>
                   <th>Event Name</th>
                   <th>Location</th>
                   <th>Start Time</th>
                   <th>End Time</th>
+                  <th>Schedule Date</th>
                   <th>Book By</th>
                </tr>
             </thead>
@@ -120,10 +120,6 @@
                 },
     			"destroy": true,
     			"columns": [{
-    					"data": "id",
-    					"visible": false
-    				},
-    				{
     					"data": "meetingRoomDetails.name"
     				},
     				{
@@ -137,6 +133,9 @@
     				},
     				{
     					"data": "duration.endTime"
+    				},
+    				{
+    					"data": "scheduleDate"
     				},
     				{
     					"data": "owner.firstName",

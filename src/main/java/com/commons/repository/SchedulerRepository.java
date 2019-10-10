@@ -13,8 +13,5 @@ import com.commons.entity.Scheduler;
 @Repository
 public interface SchedulerRepository extends JpaRepository<Scheduler, Long>, JpaSpecificationExecutor<Scheduler>{
 
-	@Query("select s from Scheduler s where s.duration.startTime > ?1 and s.scheduleDate = ?2")
-	List<Scheduler> findByTodayAfterCurrentTime(long nowtime, Date date);
-
 }
 

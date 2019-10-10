@@ -1,8 +1,13 @@
 package com.commons.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +20,6 @@ import com.commons.repository.DurationRepository;
 import com.commons.repository.MeetingRoomDetailsRepository;
 import com.commons.repository.SchedulerRepository;
 import com.commons.service.ConferanceService;
-import com.commons.service.SchedulerService;
 
 @Service
 public class ConferanceServiceImpl implements ConferanceService{
@@ -29,52 +33,56 @@ public class ConferanceServiceImpl implements ConferanceService{
 	@Autowired
 	MeetingRoomDetailsRepository meetingRoomDetailsRepository;
 
-	@Override
-	public DataTableJsonObject featchAll(String searchCol, String orderDirection, String searchParameter,
-			Integer startRec, Integer pageDisplayLength, Integer pageNumber) {
-
-		List<Scheduler> dataList = schedulerRepository.findAll();
-		DataTableJsonObject dt = new DataTableJsonObject();
-		dt.setAaData(dataList);
-		dt.setiTotalRecords(dataList.size());
-		dt.setiTotalDisplayRecords(dataList.size());
-		return dt;
-	}
+	@PersistenceContext
+	private EntityManager em;
 
 	@Override
-	public DataTableJsonObject search(
-			String searchCol, String orderDirection, String searchParameter, Integer startRec, Integer pageDisplayLength, Integer pageNumber, String location, int durationid, String time, Date date) {
+	public DataTableJsonObject featchAll(String orderField, String orderDirection, String searchParameter, Integer startRec,
+			Integer pageDisplayLength, Integer pageNumber, String location, String durationid, String time, Date date_,
+			boolean issearch) {
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+		List<Scheduler> list;
+		if(!issearch) {
+			System.out.println("today date- "+sf.format(new Date()));
+			Query query = em.createQuery("select s from Scheduler s where s.scheduleDate = \'"+sf.format(new Date())+"\' order by "+orderField +" "+ orderDirection);
+			list = query.getResultList();
+		}else {
+			System.out.println("search  date- "+sf.format(date_));
+			Duration duration = durationRepository.findById(Long.parseLong(durationid)).get();
+			List<MeetingRoomDetails> meetingRoomDetailsList = meetingRoomDetailsRepository.findByLocationOrderByNameDesc(location);
 
-		//To Do ::1 find booked scheduler data..
-		//List<Scheduler> bookedSchedule = schedulerRepository.findByTodayAfterCurrentTime(new Date().getTime(), new Date());
+			Query query = em.createQuery("select s from Scheduler s where s.scheduleDate = \'"+sf.format(date_) + "\' and s.meetingRoomDetails.location like \'"+location + "\'") ;
+			List<Scheduler> schedulerList = query.getResultList();
 
-		//To Do :: create list for data which not booked for today...
-		List<Duration> durationList = durationRepository.findAll();
-		List<MeetingRoomDetails> meetingRoomDetailsList = meetingRoomDetailsRepository.findByLocationOrderByNameDesc(location);
-
-		List<Scheduler> dataSet = new ArrayList<Scheduler>(0); 
-		for (Duration duration : durationList) {
+			list = new ArrayList<Scheduler>(0); 
 			for (MeetingRoomDetails meetingRoomDetails : meetingRoomDetailsList) {
-				Scheduler s = new Scheduler();
-				s.setId(new Integer(0));
-				s.setEventName("-");
-				s.setDuration(duration);
-				s.setMeetingRoomDetails(meetingRoomDetails);
-				s.setOwner(null);
-				dataSet.add(s);
+
+				if(schedulerList.contains(new Scheduler(meetingRoomDetails, duration))) {
+					continue;
+				}else {
+					Scheduler s = new Scheduler();
+					s.setId(new Long(0));
+					s.setEventName("-");
+					s.setDuration(duration);
+					s.setMeetingRoomDetails(meetingRoomDetails);
+					s.setScheduleDate(date_);
+					s.setOwner(null);
+					list.add(s);
+				}
 			}
 		}
-
 		DataTableJsonObject dt = new DataTableJsonObject();
-		dt.setAaData(dataSet);
-		dt.setiTotalRecords(dataSet.size());
-		dt.setiTotalDisplayRecords(dataSet.size());
-
+		dt.setAaData(list);
+		dt.setiTotalRecords(list.size());
+		dt.setiTotalDisplayRecords(list.size());
 		return dt;
 	}
+
 
 	@Override
 	public List<Duration> fetchAllDuration() {
 		return durationRepository.findAll();
 	}
+
+
 }

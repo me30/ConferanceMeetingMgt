@@ -15,6 +15,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "scheduler")
@@ -23,7 +25,7 @@ public class Scheduler {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column
-	private Integer id;
+	private Long id;
 	
 	@ManyToOne
 	@JoinColumn(name = "owner")
@@ -46,14 +48,15 @@ public class Scheduler {
 	@JoinColumn(name = "duration_id")
 	private Duration duration;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name = "schedule_date")
 	private Date scheduleDate;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -97,5 +100,52 @@ public class Scheduler {
 		this.duration = duration;
 	}
 	
-	
+	public Date getScheduleDate() {
+		return scheduleDate;
+	}
+
+	public void setScheduleDate(Date scheduleDate) {
+		this.scheduleDate = scheduleDate;
+	}
+
+	public Scheduler() {
+	}
+
+	public Scheduler(MeetingRoomDetails meetingRoomDetails, Duration duration) {
+		super();
+		this.meetingRoomDetails = meetingRoomDetails;
+		this.duration = duration;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
+		result = prime * result + ((meetingRoomDetails == null) ? 0 : meetingRoomDetails.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Scheduler other = (Scheduler) obj;
+		if (duration == null) {
+			if (other.duration != null)
+				return false;
+		} else if (!duration.equals(other.duration))
+			return false;
+		if (meetingRoomDetails == null) {
+			if (other.meetingRoomDetails != null)
+				return false;
+		} else if (!meetingRoomDetails.equals(other.meetingRoomDetails))
+			return false;
+		return true;
+	}
+
 }

@@ -8,9 +8,9 @@ import com.commons.model.DataTableJsonObject;
 
 public interface ConferanceService {
 
-	DataTableJsonObject featchAll(String searchCol, String orderDirection, String searchParameter, Integer startRec, Integer pageDisplayLength, Integer pageNumber);
-
 	List<Duration> fetchAllDuration();
 
-	DataTableJsonObject search(String searchCol, String orderDirection, String searchParameter, Integer startRec, Integer pageDisplayLength, Integer pageNumber, String location, int durationid, String time, Date date);
+	DataTableJsonObject featchAll(String orderField, String orderDirection, String searchParameter, Integer startRec,
+			Integer pageDisplayLength, Integer pageNumber, String location, String durationid, String time, Date date,
+			boolean issearch);
 }
