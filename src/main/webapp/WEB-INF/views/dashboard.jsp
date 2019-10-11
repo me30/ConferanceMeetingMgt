@@ -19,7 +19,13 @@
       
    </head>
    <body>
+   
    	  <div class="container">
+   	  <br/>
+   	  <div class="alert alert-success row" style="display:none;">
+   	  <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+  <strong>Success!</strong> Event Booked, Kindly check mail
+</div>
    	  <br/>
       <div class="row">
          <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filter-panel">
@@ -178,6 +184,7 @@
     				  success: function(data){
     					  $('#book').modal('toggle');
     					  $('#meetingtbl').dataTable()._fnAjaxUpdate();
+    					  $("div.alert-success").show().delay(5000).fadeOut();
     				  }
     				});
     			
