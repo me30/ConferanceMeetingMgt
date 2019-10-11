@@ -60,8 +60,8 @@
                   </div>
                   
                   <div class="form-group col-sm-3">
-                     <label class="filter-col"  for="pref-orderby"></label>
                   	<button type="button" class="btn btn-primary devsearch form-control">Search</button>
+                  	<button type="button" class="btn btn-primary devclear form-control">Clear</button>
                   </div>
             </div>
          </div>
@@ -159,10 +159,11 @@
     		$('.devsearch').on("click", function () {
     			search = true;
     			table.draw();
-    			
-    			
+    			search = false;
     		});
-    		
+    		$('.devclear').on("click", function () {
+    			table.draw();
+    		});
     		$('.devbooksavebtn').on("click", function () {
     			$.ajax({
     				  type: "POST",
