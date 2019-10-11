@@ -176,6 +176,7 @@
     				  cache: false,
     				  success: function(data){
     					  $('#book').modal('toggle');
+    					  $('#meetingtbl').dataTable()._fnAjaxUpdate();
     				  }
     				});
     			
